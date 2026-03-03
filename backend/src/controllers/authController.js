@@ -1,4 +1,4 @@
-const { generateToken } = require('../utils/jwt');
+const { generateToken, verifyToken } = require('../utils/jwt');
 const { getDiscordAuthUrl, exchangeCode, getDiscordUser } = require('../services/discordService');
 const { PrismaClient } = require('@prisma/client');
 
@@ -64,7 +64,6 @@ const getMe = async (req, res) => {
 
   const token = authHeader.split(' ')[1];
   try {
-    const { verifyToken } = require('../utils/jwt');
     const payload = verifyToken(token);
 
     const user = await prisma.user.findUnique({

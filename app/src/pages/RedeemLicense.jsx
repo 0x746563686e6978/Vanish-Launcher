@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Key, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -10,6 +10,15 @@ const fadeIn = {
   animate: { opacity: 1, y: 0 },
 };
 
+const fetchLicenseStatus = async (setLicenseStatus) => {
+  try {
+    const res = await api.get('/license/status');
+    setLicenseStatus(res.data);
+  } catch {
+    // Silently fail
+  }
+};
+
 export default function RedeemLicense() {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,16 +26,7 @@ export default function RedeemLicense() {
   const { setLicense } = useStore();
 
   useEffect(() => {
-    fetchStatus();
-  }, [fetchStatus]);
-
-  const fetchStatus = useCallback(async () => {
-    try {
-      const res = await api.get('/license/status');
-      setLicenseStatus(res.data);
-    } catch {
-      // Silently fail
-    }
+    fetchLicenseStatus(setLicenseStatus);
   }, []);
 
   const handleRedeem = async (e) => {
@@ -39,7 +39,7 @@ export default function RedeemLicense() {
       setLicense(res.data.license);
       toast.success('License redeemed successfully!');
       setCode('');
-      fetchStatus();
+      fetchLicenseStatus(setLicenseStatus);
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to redeem license');
     } finally {
