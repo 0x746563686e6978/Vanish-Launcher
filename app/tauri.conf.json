@@ -19,7 +19,7 @@
       },
       "fs": {
         "all": false,
-        "writeBinaryFile": true,
+        "writeFile": true,
         "readFile": true,
         "scope": ["$DESKTOP/**", "$HOME/**"]
       },
