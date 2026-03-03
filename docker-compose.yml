@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vanish-backend
+    env_file:
+      - .env
+    ports:
+      - "${PORT:-4000}:4000"
+    volumes:
+      - vanish-db:/app/prisma
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  vanish-db:
